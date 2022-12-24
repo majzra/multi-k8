@@ -6,12 +6,43 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: 'nginx'
     nginx.ingress.kubernetes.io/use-regex: 'true'
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
     # ADD ANNOTATION
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     # UPDATE ANNOTATION
 spec:
+  tls:
+    - hosts:
+        - kubes.striderz.com
+        - www.kubes.striderz.com
+      secretName: kubes-striderz-com
   rules:
-    - http:
+    - host: kubes.striderz.com
+      http:
+        paths:
+          - path: /?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: client-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api/?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: express-clusterip-service
+                port:
+                  number: 5000
+    - host: www.kubes.striderz.com
+      http:
         paths:
           - path: /?(.*)
             # UPDATE PATH
