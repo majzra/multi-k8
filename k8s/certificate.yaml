@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kubes-striderz-com-tls
+spec:
+  secretName: kubes-striderz-com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: kubes.striderz.com
+  dnsNames:
+    - kubes.striderz.com
+    - www.kubes.striderz.com
